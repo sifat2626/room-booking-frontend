@@ -61,6 +61,18 @@ const authOptions = {
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role; // Attach user role to token
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user.role = token.role; // Attach user role to session
+      return session;
+    },
+  },
   pages: {
     signIn: "/login",
   },

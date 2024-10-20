@@ -1,72 +1,92 @@
 "use client";
+import React from "react";
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  NavbarMenuToggle,
+  NavbarMenu,
+  NavbarMenuItem,
+  Link,
+  Button,
+} from "@nextui-org/react";
 
-import { useSession } from "next-auth/react";
-import Link from "next/link";
+export default function App() {
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
-function Navbar() {
-  const session = useSession();
-  console.log("session=>", session);
-  const navList = [
-    {
-      path: "Home",
-      href: "/",
-    },
-    {
-      path: "Login",
-      href: "/login",
-    },
-    {
-      path: "Register",
-      href: "/register",
-    },
+  const menuItems = [
+    "Profile",
+    "Dashboard",
+    "Activity",
+    "Analytics",
+    "System",
+    "Deployments",
+    "My Settings",
+    "Team Settings",
+    "Help & Feedback",
+    "Log Out",
   ];
+
   return (
-    <div className="navbar bg-base-100">
-      <div className="navbar-start">
-        <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+    <Navbar onMenuOpenChange={setIsMenuOpen}>
+      <NavbarContent>
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          className="sm:hidden"
+        />
+        <NavbarBrand>
+          <p className="font-bold text-inherit">ACME</p>
+        </NavbarBrand>
+      </NavbarContent>
+
+      <NavbarContent className="hidden sm:flex gap-4" justify="center">
+        <NavbarItem>
+          <Link color="foreground" href="#">
+            Features
+          </Link>
+        </NavbarItem>
+        <NavbarItem isActive>
+          <Link href="#" aria-current="page">
+            Customers
+          </Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Link color="foreground" href="#">
+            Integrations
+          </Link>
+        </NavbarItem>
+      </NavbarContent>
+      <NavbarContent justify="end">
+        <NavbarItem className="hidden lg:flex">
+          <Link href="#">Login</Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Button as={Link} color="primary" href="#" variant="flat">
+            Sign Up
+          </Button>
+        </NavbarItem>
+      </NavbarContent>
+      <NavbarMenu>
+        {menuItems.map((item, index) => (
+          <NavbarMenuItem key={`${item}-${index}`}>
+            <Link
+              color={
+                index === 2
+                  ? "primary"
+                  : index === menuItems.length - 1
+                  ? "danger"
+                  : "foreground"
+              }
+              className="w-full"
+              href="#"
+              size="lg"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h8m-8 6h16"
-              />
-            </svg>
-          </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
-          >
-            {navList.map((menu) => (
-              <li key={menu.path}>
-                <Link href={menu.href}>{menu.path}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <a className="btn btn-ghost text-xl">daisyUI</a>
-      </div>
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
-          {navList.map((menu) => (
-            <li key={menu.path}>
-              <Link href={menu.href}>{menu.path}</Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="navbar-end">
-        <a className="btn">Button</a>
-      </div>
-    </div>
+              {item}
+            </Link>
+          </NavbarMenuItem>
+        ))}
+      </NavbarMenu>
+    </Navbar>
   );
 }
-
-export default Navbar;
