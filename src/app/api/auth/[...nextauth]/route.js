@@ -1,12 +1,11 @@
 import { axiosCommon } from "@/app/hooks/useAxios";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { signIn } from "next-auth/react";
 
 const authOptions = {
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // Example: 30 days
+    maxAge: 24 * 60 * 60, // Example: 1 day
   },
   providers: [
     CredentialsProvider({
@@ -39,18 +38,26 @@ const authOptions = {
             password,
           });
 
-          // Assuming your backend returns user data on success
-          const { user } = response.data; // Adjust based on your backend response structure
+          // Assuming your backend returns user data and an access token on success
+          const { user, accessToken } = response.data; // Adjust based on your backend response structure
 
           // Check if user data is valid
           if (user && user.id) {
-            // Ensure user has an ID
+            // Use absolute URL for setting the cookie
+            const apiUrl = `${process.env.NEXTAUTH_URL}/api/set-access-token`; // Ensure NEXTAUTH_URL is set in your .env file
+
+            await fetch(apiUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ accessToken }),
+            });
+
             return {
               id: user.id,
               name: user.name,
               email: user.email,
               role: user.role,
-            }; // Return the user object
+            };
           } else {
             return null; // Return null if no valid user data
           }

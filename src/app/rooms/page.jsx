@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { axiosCommon } from "../hooks/useAxios";
 import Link from "next/link";
+import RoomCard from "../components/RoomCard";
 
 function Page() {
   const [rooms, setRooms] = useState([]);
@@ -32,12 +33,10 @@ function Page() {
       {rooms.length === 0 ? (
         <p>No rooms available.</p>
       ) : (
-        <ul>
+        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full p-5 bg-green-700">
           {rooms.map((room) => (
             <li key={room._id}>
-              <Link href={`/rooms/${room._id}`} passHref>
-                {room.title}
-              </Link>
+              <RoomCard {...room} />
             </li>
           ))}
         </ul>
