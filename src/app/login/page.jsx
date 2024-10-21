@@ -1,12 +1,13 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../context/authContext";
 
 export default function LoginPage() {
   const [error, setError] = useState(null);
   const router = useRouter();
+  const { login } = useAuth(); // Get login function from context
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -14,15 +15,11 @@ export default function LoginPage() {
     const email = form.email.value;
     const password = form.password.value;
 
-    const result = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    });
-
-    if (result.ok) {
-      router.push("/"); // Redirect to homepage or dashboard after login
-    } else {
+    try {
+      await login(email, password); // Call login from context
+      router.push("/"); // Redirect after successful login
+    } catch (err) {
+      console.error("Login error:", err);
       setError("Invalid credentials, please try again.");
     }
   };

@@ -17,13 +17,10 @@ import {
   Avatar,
 } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const pathName = usePathname();
-  const { data: session } = useSession();
-  console.log(session);
 
   const navItems = [
     {
@@ -75,47 +72,35 @@ export default function App() {
             />
           </DropdownTrigger>
           <DropdownMenu aria-label="Profile Actions" variant="flat">
-            {session && (
-              <DropdownItem key="profile" className="h-14 gap-2">
-                <p className="font-semibold">Signed in as</p>
-                <p className="font-semibold">zoey@example.com</p>
-              </DropdownItem>
-            )}
+            <DropdownItem key="profile" className="h-14 gap-2">
+              <p className="font-semibold">Signed in as</p>
+              <p className="font-semibold">zoey@example.com</p>
+            </DropdownItem>
 
-            {session && (
-              <DropdownItem key="user">
-                <Link href="/dashboard/user" className="text-gray-900">
-                  User Dashboard
-                </Link>
-              </DropdownItem>
-            )}
+            <DropdownItem key="user">
+              <Link href="/dashboard/user" className="text-gray-900">
+                User Dashboard
+              </Link>
+            </DropdownItem>
 
-            {session?.user?.role === "admin" && (
-              <DropdownItem key="admin">
-                <Link href="/dashboard/admin" className="text-gray-900">
-                  Admin Dashboard
-                </Link>
-              </DropdownItem>
-            )}
-            {session && (
-              <DropdownItem
-                key="logout"
-                color="danger"
-                onClick={() => signOut({ callbackUrl: "/" })}
-              >
-                Log Out
-              </DropdownItem>
-            )}
-            {!session && (
-              <DropdownItem key="login" color="danger">
-                <Link href="/login">Log in</Link>
-              </DropdownItem>
-            )}
-            {!session && (
-              <DropdownItem key="register" color="danger">
-                <Link href="/register">Register</Link>
-              </DropdownItem>
-            )}
+            <DropdownItem key="admin">
+              <Link href="/dashboard/admin" className="text-gray-900">
+                Admin Dashboard
+              </Link>
+            </DropdownItem>
+            <DropdownItem
+              key="logout"
+              color="danger"
+              onClick={() => signOut({ callbackUrl: "/" })}
+            >
+              Log Out
+            </DropdownItem>
+            <DropdownItem key="login" color="danger">
+              <Link href="/login">Log in</Link>
+            </DropdownItem>
+            <DropdownItem key="register" color="danger">
+              <Link href="/register">Register</Link>
+            </DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </NavbarContent>

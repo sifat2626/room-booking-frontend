@@ -1,6 +1,8 @@
 "use client";
 import BookingHistory from "@/app/components/BookingHistory";
-import useAuthClient from "../../hooks/useAuthClient";
+import { useContext } from "react";
+import authContext, { useAuth } from "@/app/context/authContext";
+import useAuthClient from "@/app/hooks/useAuthClient";
 
 function Page() {
   useAuthClient();

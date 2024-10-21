@@ -1,9 +1,9 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
-import AuthProvider from "./services/AuthProvider";
 import Navbar from "./components/Navbar";
 import { NextUIProvider } from "@nextui-org/react";
+import { AuthProvider } from "./context/authContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
