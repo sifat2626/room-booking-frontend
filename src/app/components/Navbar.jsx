@@ -44,9 +44,9 @@ export default function App() {
           className="sm:hidden"
         />
         <NavbarBrand>
-          <p className="font-bold text-inherit text-xl">
+          <Link href="/" className="font-bold text-inherit text-xl">
             Cozy<span className="text-green-500">Find</span>
-          </p>
+          </Link>
         </NavbarBrand>
       </NavbarContent>
 
