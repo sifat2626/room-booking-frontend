@@ -2,7 +2,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { axiosCommon } from "../hooks/useAxios";
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; // Make sure you have this installed
 
 const AuthContext = createContext();
 
@@ -48,9 +48,31 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const register = async (name, email, password) => {
+    try {
+      const response = await axiosCommon.post(
+        "/users/register",
+        { name, email, password },
+        { withCredentials: true }
+      );
+
+      if (response.status === 201) {
+        const { user, accessToken } = response.data;
+        console.log(accessToken);
+        setUser(user); // Set user directly
+        await login(email, password);
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      setError(
+        error.response ? error.response.data.message : "Registration failed"
+      );
+    }
+  };
+
   const logout = async () => {
     try {
-      // await axiosCommon.post("/users/logout");
+      await axiosCommon.post("/users/logout", {}, { withCredentials: true });
       setUser(null);
       Cookies.remove("access_token");
     } catch (error) {
@@ -60,7 +82,9 @@ export const AuthProvider = ({ children }) => {
 
   const getUserDetails = async () => {
     try {
-      const response = await axiosCommon.get("/users/me");
+      const response = await axiosCommon.get("/users/me", {
+        withCredentials: true,
+      });
       setUser(response.data);
     } catch (error) {
       console.error("Fetch user details error:", error);
@@ -77,7 +101,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, getUserDetails, error }}
+      value={{ user, login, register, logout, getUserDetails, error }}
     >
       {children}
     </AuthContext.Provider>

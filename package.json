@@ -13,6 +13,7 @@
     "@nextui-org/react": "^2.4.8",
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",
+    "form-data": "^4.0.1",
     "framer-motion": "^11.11.9",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
