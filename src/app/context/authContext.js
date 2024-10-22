@@ -1,30 +1,41 @@
 "use client";
-// context/AuthContext.js
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 import { axiosCommon } from "../hooks/useAxios";
 import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const token = Cookies.get("access_token");
+    return token ? jwtDecode(token) : null;
+  });
+
+  const [error, setError] = useState(null);
+
+  // Function to decode token and set user
+  const decodeTokenAndSetUser = (token) => {
+    try {
+      const decodedUser = jwtDecode(token);
+      setUser(decodedUser);
+    } catch (err) {
+      console.error("Token decoding error:", err);
+      setUser(null); // Reset user if decoding fails
+    }
+  };
 
   const login = async (email, password) => {
     try {
-      const response = await axiosCommon.post("/users/login", {
-        email,
-        password,
-      });
-
-      console.log("Login response:", response.data); // Log full response
+      const response = await axiosCommon.post(
+        "/users/login",
+        { email, password },
+        { withCredentials: true }
+      );
 
       if (response.status === 200) {
-        const { user, accessToken } = response.data; // Adjust based on your backend response structure
-        console.log("User data received:", user); // Log user data
-
-        setUser(user); // Set user state
-
-        // Set the access token in a cookie
+        const { user, accessToken } = response.data;
+        setUser(user); // Set user directly
         Cookies.set("access_token", accessToken, {
           expires: 1,
           secure: true,
@@ -33,20 +44,15 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Login error:", error);
-      if (error.response) {
-        throw new Error(error.response.data.message || "Login failed");
-      }
-      throw new Error("Network error");
+      setError(error.response ? error.response.data.message : "Login failed");
     }
   };
 
   const logout = async () => {
     try {
-      await axiosCommon.post("/users/logout"); // Assuming your backend has a logout endpoint
+      await axiosCommon.post("/users/logout");
       setUser(null);
-
-      // Remove the access token cookie on logout
-      Cookies.remove("access_token"); // Expire the cookie
+      Cookies.remove("access_token");
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -54,15 +60,25 @@ export const AuthProvider = ({ children }) => {
 
   const getUserDetails = async () => {
     try {
-      const response = await axiosCommon.get("/users/me"); // Fetch user details from /me endpoint
-      setUser(response.data); // Update user state with fetched details
+      const response = await axiosCommon.get("/users/me");
+      setUser(response.data);
     } catch (error) {
       console.error("Fetch user details error:", error);
     }
   };
 
+  // Effect to decode token and update user state if token exists
+  useEffect(() => {
+    const token = Cookies.get("access_token");
+    if (token) {
+      decodeTokenAndSetUser(token);
+    }
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, getUserDetails }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, getUserDetails, error }}
+    >
       {children}
     </AuthContext.Provider>
   );

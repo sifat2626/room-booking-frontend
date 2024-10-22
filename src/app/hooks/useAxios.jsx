@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const axiosCommon = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true, // Enable sending cookies with requests
+  withCredentials: true,
 });
 
 // Optionally, you can add interceptors for logging or handling errors globally
