@@ -81,7 +81,7 @@ const BookingCalendar = ({ bookedDates, roomId }) => {
   return (
     <div className="mt-6">
       <h2 className="text-xl font-bold mb-8">Select Your Booking Dates</h2>
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         <DateRangePicker
           ranges={[selectionRange]} // Pass the current selection range
           onChange={handleSelect} // Update selection state on change
