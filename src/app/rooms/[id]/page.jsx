@@ -78,7 +78,7 @@ function Page({ params }) {
       </div>
 
       {/* Pass bookedDates to BookingCalendar */}
-      <BookingCalendar bookedDates={bookedDates} />
+      <BookingCalendar bookedDates={bookedDates} roomId={room._id} />
     </div>
   );
 }
