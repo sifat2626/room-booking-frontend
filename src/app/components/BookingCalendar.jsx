@@ -88,6 +88,7 @@ const BookingCalendar = ({ bookedDates, roomId }) => {
           disabledDates={reservedDates} // Disable already booked dates (if needed)
           moveRangeOnFirstSelection={false}
           months={2}
+          minDate={new Date()}
           direction="horizontal"
         />
       </div>
@@ -98,6 +99,7 @@ const BookingCalendar = ({ bookedDates, roomId }) => {
           disabledDates={reservedDates} // Disable already booked dates (if needed)
           moveRangeOnFirstSelection={false}
           months={1}
+          minDate={new Date()}
           direction="horizontal"
         />
       </div>
