@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { DateRangePicker } from "react-date-range";
+import { DateRange, DateRangePicker } from "react-date-range";
 import { addDays } from "date-fns";
 import { createBooking } from "@/app/services/bookingService"; // Adjust the import path as necessary
 import Swal from "sweetalert2"; // Import SweetAlert2
@@ -81,15 +81,26 @@ const BookingCalendar = ({ bookedDates, roomId }) => {
   return (
     <div className="mt-6">
       <h2 className="text-xl font-bold mb-8">Select Your Booking Dates</h2>
-      <DateRangePicker
-        ranges={[selectionRange]} // Pass the current selection range
-        onChange={handleSelect} // Update selection state on change
-        disabledDates={reservedDates} // Disable already booked dates (if needed)
-        showSelectionPreview={true}
-        moveRangeOnFirstSelection={false}
-        months={2}
-        direction="horizontal"
-      />
+      <div className="hidden md:block">
+        <DateRangePicker
+          ranges={[selectionRange]} // Pass the current selection range
+          onChange={handleSelect} // Update selection state on change
+          disabledDates={reservedDates} // Disable already booked dates (if needed)
+          moveRangeOnFirstSelection={false}
+          months={2}
+          direction="horizontal"
+        />
+      </div>
+      <div className="lg:hidden block">
+        <DateRange
+          ranges={[selectionRange]} // Pass the current selection range
+          onChange={handleSelect} // Update selection state on change
+          disabledDates={reservedDates} // Disable already booked dates (if needed)
+          moveRangeOnFirstSelection={false}
+          months={1}
+          direction="horizontal"
+        />
+      </div>
 
       <div className="mt-4">
         <h3 className="font-semibold">Selected Dates:</h3>
