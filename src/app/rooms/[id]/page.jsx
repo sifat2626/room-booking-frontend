@@ -1,18 +1,24 @@
 "use client";
-import { axiosCommon } from "@/app/hooks/useAxios";
 import { useEffect, useState } from "react";
+import { getRoomById } from "@/app/services/roomService"; // Import the new service
+import useAuthClient from "@/app/hooks/useAuthClient"; // Assuming you have this hook
+import { FaDollarSign } from "react-icons/fa";
+import { FaClover } from "react-icons/fa6";
+import BookingCalendar from "@/app/components/BookingCalendar";
 
 function Page({ params }) {
+  useAuthClient(); // Assuming this handles authentication
   const [room, setRoom] = useState(null); // Initialize with null to check loading state
+  const [bookedDates, setBookedDates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchRoomDetails = async () => {
       try {
-        const res = await axiosCommon.get(`/rooms/${params.id}`);
-        const data = await res.data; // Use res.data to get the JSON data
-        setRoom(data); // Set room data
+        const data = await getRoomById(params.id); // Use the new service function
+        setRoom(data.room); // Set room data
+        setBookedDates(data.bookedDates);
       } catch (err) {
         setError(err.message); // Set error message
       } finally {
@@ -39,31 +45,40 @@ function Page({ params }) {
   }
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl mt-5">
-      <h3 className="text-center text-2xl font-bold mb-4">Room Details</h3>
-      <div className="md:flex">
-        <div className="md:flex-shrink-0">
+    <div className="p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 mt-4 rounded-lg gap-8">
+        <div className="col-span-1">
           <img
-            className="h-48 w-full object-cover md:w-48"
             src={room.picture}
             alt={room.title}
+            className="h-96 w-full object-cover rounded-lg"
           />
         </div>
-        <div className="p-8">
-          <h2 className="text-xl font-bold text-gray-900">{room.title}</h2>
-          <p className="mt-2 text-gray-600">Rent: ${room.rent}</p>
-          <h3 className="mt-4 text-lg font-semibold">Facilities:</h3>
-          <ul className="list-disc list-inside mt-2 text-gray-600">
-            {room.facilities && room.facilities.length > 0 ? (
-              room.facilities.map((facility, index) => (
-                <li key={index}>{facility}</li>
-              ))
-            ) : (
-              <li>No facilities listed</li>
-            )}
-          </ul>
+        <div className="">
+          <h3 className="font-bold my-2 text-6xl">{room.title}</h3>
+          <div className="flex items-center gap-4">
+            <h6 className="text-3xl font-medium">Rent: </h6>
+            <div className="flex gap-[1px] items-center">
+              <p className="text-3xl font-semibold">{room.rent}</p>
+              <FaDollarSign className="text-yellow-500 text-3xl" />
+            </div>
+          </div>
+          <div className="mt-2">
+            {room.facilities.map((facility, index) => (
+              <div
+                className="flex gap-1 items-center text-lg font-medium"
+                key={index}
+              >
+                <FaClover className="text-green-500" />
+                {facility}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+
+      {/* Pass bookedDates to BookingCalendar */}
+      <BookingCalendar bookedDates={bookedDates} />
     </div>
   );
 }

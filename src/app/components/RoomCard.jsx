@@ -13,7 +13,7 @@ function RoomCard({ _id, title, rent, facilities, picture }) {
         />
       </div>
       <div className="flex-grow">
-        <p className="font-bold my-2 text-2xl">{title}</p>
+        <h3 className="font-bold my-2 text-2xl">{title}</h3>
         <div className="flex gap-[2px] items-center">
           <FaDollarSign className="text-yellow-500 text-lg" />
           <p className="text-lg font-semibold">{rent}</p>

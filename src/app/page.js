@@ -29,6 +29,7 @@ export default async function Home() {
       <h3>title</h3>
       <h3>error page</h3>
       <h3>footer</h3>
+      <h3>responsiveness</h3>
     </>
   );
 }
