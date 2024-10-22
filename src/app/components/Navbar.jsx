@@ -17,10 +17,13 @@ import {
   Avatar,
 } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
+import { useAuth } from "../context/authContext";
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const pathName = usePathname();
+  const { user, logout } = useAuth();
+  console.log(user);
 
   const navItems = [
     {
@@ -72,35 +75,47 @@ export default function App() {
             />
           </DropdownTrigger>
           <DropdownMenu aria-label="Profile Actions" variant="flat">
-            <DropdownItem key="profile" className="h-14 gap-2">
-              <p className="font-semibold">Signed in as</p>
-              <p className="font-semibold">zoey@example.com</p>
-            </DropdownItem>
+            {user?.id && (
+              <DropdownItem key="profile" className="h-14 gap-2">
+                <p className="font-semibold">Signed in as</p>
+                <p className="font-semibold">{user?.email}</p>
+              </DropdownItem>
+            )}
 
-            <DropdownItem key="user">
-              <Link href="/dashboard/user" className="text-gray-900">
-                User Dashboard
-              </Link>
-            </DropdownItem>
+            {user?.id && (
+              <DropdownItem key="user">
+                <Link href="/dashboard/user" className="text-gray-900">
+                  User Dashboard
+                </Link>
+              </DropdownItem>
+            )}
 
-            <DropdownItem key="admin">
-              <Link href="/dashboard/admin" className="text-gray-900">
-                Admin Dashboard
-              </Link>
-            </DropdownItem>
-            <DropdownItem
-              key="logout"
-              color="danger"
-              onClick={() => signOut({ callbackUrl: "/" })}
-            >
-              Log Out
-            </DropdownItem>
-            <DropdownItem key="login" color="danger">
-              <Link href="/login">Log in</Link>
-            </DropdownItem>
-            <DropdownItem key="register" color="danger">
-              <Link href="/register">Register</Link>
-            </DropdownItem>
+            {user?.role === "admin" && (
+              <DropdownItem key="admin">
+                <Link href="/dashboard/admin" className="text-gray-900">
+                  Admin Dashboard
+                </Link>
+              </DropdownItem>
+            )}
+            {user?.id && (
+              <DropdownItem
+                key="logout"
+                color="danger"
+                onClick={() => logout()}
+              >
+                Log Out
+              </DropdownItem>
+            )}
+            {!user && (
+              <DropdownItem key="login" color="danger">
+                <Link href="/login">Log in</Link>
+              </DropdownItem>
+            )}
+            {!user && (
+              <DropdownItem key="register" color="danger">
+                <Link href="/register">Register</Link>
+              </DropdownItem>
+            )}
           </DropdownMenu>
         </Dropdown>
       </NavbarContent>

@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axiosCommon.post("/users/logout");
+      // await axiosCommon.post("/users/logout");
       setUser(null);
       Cookies.remove("access_token");
     } catch (error) {

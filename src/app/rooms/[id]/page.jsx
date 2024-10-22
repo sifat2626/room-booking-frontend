@@ -11,9 +11,6 @@ function Page({ params }) {
     const fetchRoomDetails = async () => {
       try {
         const res = await axiosCommon.get(`/rooms/${params.id}`);
-        if (!res.ok) {
-          throw new Error("Network response was not ok");
-        }
         const data = await res.data; // Use res.data to get the JSON data
         setRoom(data); // Set room data
       } catch (err) {
