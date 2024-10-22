@@ -1,11 +1,14 @@
 "use client";
+import AdminDashboard from "@/app/components/dashboard/admin/AdminDashboard";
 import useAdmin from "@/app/hooks/useAdmin";
-import useAuthClient from "@/app/hooks/useAuthClient";
-import { useSession } from "next-auth/react";
 
 function Page() {
   useAdmin();
-  return <div>Admin Dashboard</div>;
+  return (
+    <div>
+      <AdminDashboard />
+    </div>
+  );
 }
 
 export default Page;
