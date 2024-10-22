@@ -84,7 +84,6 @@ export async function checkAvailability(roomId, bookedDates) {
 }
 
 // Helper function to build FormData
-// Helper function to build FormData
 function buildFormData(roomData) {
   const formData = new FormData();
 
@@ -100,15 +99,7 @@ function buildFormData(roomData) {
   }
 
   formData.append("rent", rentValue);
-
-  // Append facilities directly as an array
-  if (Array.isArray(roomData.facilities)) {
-    roomData.facilities.forEach((facility) => {
-      formData.append("facilities[]", facility); // Append each facility separately
-    });
-  } else {
-    throw new Error("Facilities must be an array.");
-  }
+  formData.append("facilities", roomData.facilities);
 
   if (roomData.image) {
     formData.append("picture", roomData.image); // Ensure 'picture' matches backend key
