@@ -8,48 +8,25 @@ export async function getRooms() {
     const { data } = await axiosCommon.get("/rooms");
     return data;
   } catch (error) {
-    throw error.response ? error.response.data : error.message; // Handle errors appropriately
+    handleError(error);
   }
 }
 
 // Function to get a room by ID
 export async function getRoomById(id) {
   try {
+    console.log("searching room");
     const { data } = await axiosCommon.get(`/rooms/${id}`); // Fetching room by ID
     return data;
   } catch (error) {
-    throw error.response ? error.response.data : error.message; // Handle errors appropriately
+    handleError(error);
   }
 }
 
 // Function to create a new room (with image upload)
 export async function createRoom(roomData) {
   try {
-    const formData = new FormData(); // Use native FormData
-    formData.append("title", roomData.title);
-
-    // Convert rent to a number and append
-    const rentValue = Number(roomData.rent);
-    if (isNaN(rentValue)) {
-      throw new Error("Rent must be a valid number."); // Validate if rent is a number
-    }
-    formData.append("rent", rentValue); // Append rent as a number
-
-    // Append facilities as an array directly
-    const facilitiesArray = roomData.facilities
-      .split(",")
-      .map((facility) => facility.trim());
-    formData.append("facilities", JSON.stringify(facilitiesArray)); // Ensure this matches backend expectations
-
-    if (roomData.image) {
-      formData.append("picture", roomData.image); // Ensure 'picture' matches backend key
-    }
-
-    // Log FormData contents for debugging
-    console.log("Logging FormData entries:");
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}, Type: ${typeof value}`);
-    }
+    const formData = buildFormData(roomData); // Build FormData
 
     const { data } = await axiosCommon.post("/rooms", formData, {
       headers: {
@@ -59,49 +36,26 @@ export async function createRoom(roomData) {
 
     return data;
   } catch (error) {
-    console.error(
-      "Error creating room:",
-      error.response ? error.response.data : error.message
-    );
-    throw error.response ? error.response.data : error.message; // Handle errors appropriately
+    handleError(error);
   }
 }
 
 // Function to update a room (with image upload if present)
 export async function updateRoom(id, roomData) {
   try {
-    const formData = new FormData(); // Use native FormData
-    formData.append("title", roomData.title);
-
-    const rentValue = Number(roomData.rent);
-    if (isNaN(rentValue)) {
-      throw new Error("Rent must be a valid number.");
-    }
-
-    formData.append("rent", rentValue); // Ensure rent is sent as a number
-
-    const facilitiesArray = roomData.facilities
-      .split(",")
-      .map((facility) => facility.trim());
-    formData.append("facilities", JSON.stringify(facilitiesArray)); // Ensure this matches backend expectations
-
-    if (roomData.image) {
-      formData.append("picture", roomData.image); // Image file
-    }
-
+    console.log("roomData=>", roomData);
+    const formData = buildFormData(roomData); // Build FormData
+    console.log("calling api");
     const { data } = await axiosCommon.put(`/rooms/${id}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
+    console.log("api called", process.env.NEXT_PUBLIC_API_URL);
 
     return data;
   } catch (error) {
-    console.error(
-      "Error updating room:",
-      error.response ? error.response.data : error.message
-    );
-    throw error.response ? error.response.data : error.message; // Handle errors appropriately
+    handleError(error);
   }
 }
 
@@ -111,7 +65,7 @@ export async function deleteRoom(id) {
     const { data } = await axiosCommon.delete(`/rooms/${id}`); // Sending DELETE request to delete a room
     return data;
   } catch (error) {
-    throw error.response ? error.response.data : error.message; // Handle errors appropriately
+    handleError(error);
   }
 }
 
@@ -125,6 +79,46 @@ export async function checkAvailability(roomId, bookedDates) {
 
     return data;
   } catch (error) {
-    throw error.response ? error.response.data : error.message; // Handle errors appropriately
+    handleError(error);
   }
+}
+
+// Helper function to build FormData
+function buildFormData(roomData) {
+  const formData = new FormData();
+
+  if (!roomData.title || !roomData.rent || !roomData.facilities) {
+    throw new Error("Title, rent, and facilities are required.");
+  }
+
+  formData.append("title", roomData.title);
+
+  const rentValue = Number(roomData.rent);
+  if (isNaN(rentValue)) {
+    throw new Error("Rent must be a valid number.");
+  }
+
+  formData.append("rent", rentValue);
+
+  // Directly append facilities since it's already an array
+  if (Array.isArray(roomData.facilities)) {
+    formData.append("facilities", JSON.stringify(roomData.facilities));
+  } else {
+    throw new Error("Facilities must be an array.");
+  }
+
+  if (roomData.image) {
+    formData.append("picture", roomData.image); // Ensure 'picture' matches backend key
+  }
+
+  return formData;
+}
+
+// Centralized error handling
+function handleError(error) {
+  console.error(
+    "API error:",
+    error.response ? error.response.data : error.message
+  );
+  throw error.response ? error.response.data : error.message; // Handle errors appropriately
 }
