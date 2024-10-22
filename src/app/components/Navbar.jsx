@@ -44,7 +44,9 @@ export default function App() {
           className="sm:hidden"
         />
         <NavbarBrand>
-          <p className="font-bold text-inherit">ACME</p>
+          <p className="font-bold text-inherit text-xl">
+            Cozy<span className="text-green-500">Find</span>
+          </p>
         </NavbarBrand>
       </NavbarContent>
 
@@ -54,7 +56,9 @@ export default function App() {
             <Link
               href={item.href}
               aria-current="page"
-              color={`${pathName === item.href ? "primary" : "foreground"}`}
+              className={`text-lg font-medium ${
+                pathName === item.href ? "text-green-500" : "text-gray-900"
+              }`}
             >
               {item.title}
             </Link>

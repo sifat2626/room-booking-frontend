@@ -2,6 +2,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import { NextUIProvider } from "@nextui-org/react";
 import { AuthProvider } from "./context/authContext";
 
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
           <AuthProvider>
             <Navbar />
             {children}
+            <Footer />
           </AuthProvider>
         </NextUIProvider>
         <Toaster position="top-right" reverseOrder={false} />
